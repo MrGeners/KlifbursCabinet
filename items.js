@@ -106,3 +106,17 @@ class items {
     }
 
 }
+
+// let currentImage = "sprites/shelf.png";
+
+// document.addEventListener("keydown", function (event) {
+//     if (event.code === "ArrowRight") {
+//         if (currentImage === "sprites/shelf.png") {
+//             currentImage = "sprites/shelf2.png";
+//         } else {
+//             currentImage = "sprites/shelf.png";
+//         }
+
+//         document.body.style.backgroundImage = `url('${currentImage}')`;
+//     }
+// });
