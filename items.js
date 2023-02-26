@@ -96,15 +96,35 @@ class PopupImage {
     }
 }
 
-class items {
-    constructor(items) {
-        this.items = [[]];
-
-
+class Items {
+    constructor(items, maxRowWidth, bufferWidth) {
+        this.items = [];
         this.currentRow = 0;
-        this.currentColumn = 0;
-    }
+        this.currentColumn = 0
 
+        this.maxRowWidth = maxRowWidth;
+        this.bufferWidth = bufferWidth;
+
+        for (const item of items) {
+            if (this.currentColumn === 0) {
+                this.items.push([]);
+            }
+
+            let currentRowWidth = 0;
+            for (const row of this.items[this.currentRow]) {
+                currentRowWidth += row.tag.offsetWidth + this.bufferWidth;
+            }
+
+            if (currentRowWidth + item.tag.offsetWidth <= this.maxRowWidth) {
+                this.items[this.currentRow].push(item);
+                this.currentColumn++;
+            } else {
+                this.currentRow++;
+                this.currentColumn = 0;
+                this.items.push([item]);
+            }
+        }
+    }
 }
 
 // let currentImage = "sprites/shelf.png";
