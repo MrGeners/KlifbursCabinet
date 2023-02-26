@@ -1,0 +1,19 @@
+{
+    "items": [
+        {
+            "name": "item1",
+            "image": "item1.jpg",
+            "className": "item-class"
+        },
+        {
+            "name": "item2",
+            "image": "item2.jpg",
+            "className": "item-class"
+        },
+        {
+            "name": "item3",
+            "image": "item3.jpg",
+            "className": ""
+        }
+    ]
+}

@@ -14,8 +14,8 @@ class Item {
 
 class PictureFrame extends Item {
 
-    constructor(name, image, popupImage, frameImg) {
-        super(name, image, "pictureFrame");
+    constructor(name, image, popupImage, frameImg, className = "pictureFrame") {
+        super(name, image, className);
         this.popupImage = popupImage;
         this.tag.onclick = this.createDisplay.bind(this);
         if (frameImg) {
@@ -141,4 +141,5 @@ class Items {
 //     }
 // });
 
-let shelf = new Items();
+let items = [new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"),];
+let shelf = new Items(items, 1000, 50);
