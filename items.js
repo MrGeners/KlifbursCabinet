@@ -1,7 +1,7 @@
 var idCounter = 0;
 
 
-class item {
+class Item {
     constructor(name, image = "", className = "") {
         this.name = name;
         idCounter++;
@@ -12,7 +12,7 @@ class item {
     }
 }
 
-class pictureFrame extends item {
+class PictureFrame extends Item {
 
     constructor(name, image, popupImage, frameImg) {
         super(name, image, "pictureFrame");
@@ -140,3 +140,5 @@ class Items {
 //         document.body.style.backgroundImage = `url('${currentImage}')`;
 //     }
 // });
+
+let shelf = new Items();
