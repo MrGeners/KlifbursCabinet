@@ -1,14 +1,16 @@
-var idCounter = 0;
+
 
 
 class Item {
+    static idCounter = 0;
+
     constructor(name, image = "", className = "") {
         this.name = name;
-        idCounter++;
+        Item.idCounter++;
         this.tag = document.createElement("img");
         this.tag.src = image;
         this.tag.className = className;
-        this.tag.id = "item" + "-" + idCounter;
+        this.tag.id = "item" + "-" + Item.idCounter;
     }
 }
 
@@ -21,7 +23,6 @@ class PictureFrame extends Item {
         if (frameImg) {
             this.frameImg = frameImg;
         }
-
     }
 
     createDisplay() {
@@ -101,9 +102,10 @@ class Items {
         this.items = [];
         this.currentRow = 0;
         this.currentColumn = 0
-
         this.maxRowWidth = maxRowWidth;
         this.bufferWidth = bufferWidth;
+        this.inBody = false;
+        this.bufferHeight = 60;
 
         for (const item of items) {
             if (this.currentColumn === 0) {
@@ -112,10 +114,10 @@ class Items {
 
             let currentRowWidth = 0;
             for (const row of this.items[this.currentRow]) {
-                currentRowWidth += row.tag.offsetWidth + this.bufferWidth;
+                currentRowWidth += row.tag.naturalWidth + this.bufferWidth;
             }
 
-            if (currentRowWidth + item.tag.offsetWidth <= this.maxRowWidth) {
+            if (currentRowWidth + item.tag.naturalWidth <= this.maxRowWidth) {
                 this.items[this.currentRow].push(item);
                 this.currentColumn++;
             } else {
@@ -124,6 +126,38 @@ class Items {
                 this.items.push([item]);
             }
         }
+    }
+
+    removeFromBody() {
+        if (!this.inBody)
+            return;
+        for (const row of this.items) {
+            for (const item of row) {
+
+            }
+        }
+        this.inBody = false;
+    }
+
+    addToBody(startX, startY) {
+
+        let currentX = startX;
+        let currentY = startY;
+        this.removeFromBody();
+
+        for (const row of this.items) {
+            for (const item of row) {
+                // item.tag.style.left = currentX + "px";
+                // item.tag.style.top = currentY + "px";
+                // item.tag.style.position = "absolute";
+                document.getElementById("itemsContainer").appendChild(item.tag);
+                //currentX += item.tag.naturalWidth + this.bufferWidth;
+            }
+
+            // currentY += this.items[0][0].tag.naturalHeight + this.bufferHeight;
+            // currentX = startX;
+        }
+        this.inBody = true;
     }
 }
 
@@ -142,4 +176,5 @@ class Items {
 // });
 
 let items = [new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"),];
-let shelf = new Items(items, 1000, 50);
+let shelf = new Items(items, 100, 50);
+shelf.addToBody(65, 70);
