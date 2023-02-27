@@ -11,7 +11,41 @@ class Item {
         this.tag.src = image;
         this.tag.className = className;
         this.tag.id = "item" + "-" + Item.idCounter;
+        // Create tooltip element
+        this.tooltip = document.createElement("div");
+        this.tooltip.classList.add("tooltip");
+        this.tooltip.textContent = this.name;
+        this.tooltip.style.display = "none";
+        document.body.appendChild(this.tooltip);
+        this.hovering = false;
+
+        // Add mouseenter event listener
+        this.tag.addEventListener("mouseenter", (event) => {
+            // Show tooltip element
+            this.tooltip.style.display = "block";
+            // Position tooltip element next to mouse cursor
+            this.tooltip.style.left = event.clientX + 10 + "px";
+            this.tooltip.style.top = event.clientY + 10 + "px";
+            this.hovering = true;
+        });
+
+        this.tag.addEventListener("mousemove", (event) => {
+            // Position tooltip element next to mouse cursor
+            if (this.hovering) {
+                this.tooltip.style.left = event.clientX + 10 + "px";
+                this.tooltip.style.top = event.clientY + 10 + "px";
+            }
+        });
+
+        // Add mouseleave event listener
+        this.tag.addEventListener("mouseleave", () => {
+            // Hide tooltip element
+            this.tooltip.style.display = "none";
+            this.hovering = false;
+        });
     }
+
+
 }
 
 class PictureFrame extends Item {
@@ -36,6 +70,79 @@ class PictureFrame extends Item {
         popup.open();
     }
 
+}
+
+class PictureBook extends Item {
+    constructor(name, image, images, className = "") {
+        super(name, image, className);
+        this.images = images;
+        this.tag.onclick = this.createDisplay.bind(this);
+        this.tag.classList.add("pictureFrame");
+
+    }
+
+    createDisplay() {
+        let popup = new ImageCarousel(this.images);
+        popup.show();
+    }
+}
+
+
+class ImageCarousel {
+    constructor(images) {
+        this.images = images;
+        this.currentImageIndex = 0;
+        this.carouselElement = document.createElement("div");
+        this.carouselElement.classList.add("carousel");
+
+        // Create left arrow button
+        const leftArrow = document.createElement("button");
+        leftArrow.classList.add("arrow");
+        leftArrow.classList.add("left");
+        leftArrow.innerHTML = "&#9664;";
+        leftArrow.addEventListener("click", () => this.showPrevImage());
+        this.carouselElement.appendChild(leftArrow);
+
+        // Create image element
+        const imageElement = document.createElement("img");
+        imageElement.src = images[this.currentImageIndex];
+        this.carouselElement.appendChild(imageElement);
+
+        // Create right arrow button
+        const rightArrow = document.createElement("button");
+        rightArrow.classList.add("arrow");
+        rightArrow.classList.add("right");
+        rightArrow.innerHTML = "&#9654;";
+        rightArrow.addEventListener("click", () => this.showNextImage());
+        this.carouselElement.appendChild(rightArrow);
+
+        // Create close button
+        const closeButton = document.createElement("button");
+        closeButton.classList.add("close");
+        closeButton.innerHTML = "&times;";
+        closeButton.addEventListener("click", () => this.hide());
+        this.carouselElement.appendChild(closeButton);
+    }
+
+    show() {
+        document.body.appendChild(this.carouselElement);
+    }
+
+    hide() {
+        this.carouselElement.remove();
+    }
+
+    showPrevImage() {
+        this.currentImageIndex = (this.currentImageIndex - 1 + this.images.length) % this.images.length;
+        const imageElement = this.carouselElement.querySelector("img");
+        imageElement.src = this.images[this.currentImageIndex];
+    }
+
+    showNextImage() {
+        this.currentImageIndex = (this.currentImageIndex + 1) % this.images.length;
+        const imageElement = this.carouselElement.querySelector("img");
+        imageElement.src = this.images[this.currentImageIndex];
+    }
 }
 
 class PopupImage {
@@ -134,6 +241,9 @@ let fillItemData = (jsonData, items) => {
         }
         else if (item.type === "pictureFrame") {
             items.push(new PictureFrame(item.name, item.image, item.popupImage, item.frameImg, item.className));
+        }
+        else if (item.type === "ImageCarousel") {
+            items.push(new PictureBook(item.name, item.image, item.images, item.className));
         }
         else {
             console.log("WARNING:this item type " + item.name + " isn't supported. Check that your items.json types are correct");
