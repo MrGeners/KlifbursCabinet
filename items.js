@@ -1,35 +1,39 @@
-var idCounter = 0;
 
 
-class item {
+
+class Item {
+    static idCounter = 0;
+
     constructor(name, image = "", className = "") {
         this.name = name;
-        idCounter++;
+        Item.idCounter++;
         this.tag = document.createElement("img");
         this.tag.src = image;
         this.tag.className = className;
-        this.tag.id = "item" + "-" + idCounter;
+        this.tag.id = "item" + "-" + Item.idCounter;
     }
 }
 
-class pictureFrame extends item {
+class PictureFrame extends Item {
 
-    constructor(name, image, popupImage, frameImg) {
-        super(name, image, "pictureFrame");
+    constructor(name, image, popupImage, frameImg, className = "") {
+        super(name, image, className);
         this.popupImage = popupImage;
         this.tag.onclick = this.createDisplay.bind(this);
+        this.tag.classList.add("pictureFrame");
         if (frameImg) {
             this.frameImg = frameImg;
         }
-
     }
 
     createDisplay() {
         if (this.frameImg) {
-            new this.popupImage(this.popupImage, "", this.frameImg);
+            let popup = new this.popupImage(this.popupImage, "sprites/flatBook.png", this.frameImg);
+            popup.open();
             return;
         }
-        new PopupImage(this.popupImage, "");
+        let popup = new PopupImage(this.popupImage, "sprites/flatBook.png");
+        popup.open();
     }
 
 }
@@ -75,7 +79,7 @@ class PopupImage {
         this.closeButtonNode.style.position = "absolute";
         this.closeButtonNode.style.top = "0";
         this.closeButtonNode.style.right = "0";
-        this.closeButtonNode.style.fontSize = "24px";
+        this.closeButtonNode.style.fontSize = "80px";
         this.closeButtonNode.style.backgroundColor = "transparent";
         this.closeButtonNode.style.border = "none";
         this.closeButtonNode.style.color = "white";
@@ -96,27 +100,59 @@ class PopupImage {
     }
 }
 
-class items {
+class Items {
     constructor(items) {
-        this.items = [[]];
-
-
-        this.currentRow = 0;
-        this.currentColumn = 0;
+        this.items = items;
+        this.inBody = false;
     }
 
+    removeFromShelf() {
+        if (!this.inBody)
+            return;
+        for (const item of this.items) {
+            item.tag.remove();
+        }
+        this.inBody = false;
+    }
+
+    addToShelf() {
+        this.removeFromShelf();
+        for (const item of this.items) {
+            document.getElementById("itemsContainer").appendChild(item.tag);
+        }
+        this.inBody = true;
+    }
 }
 
-// let currentImage = "sprites/shelf.png";
+let items = [];
 
-// document.addEventListener("keydown", function (event) {
-//     if (event.code === "ArrowRight") {
-//         if (currentImage === "sprites/shelf.png") {
-//             currentImage = "sprites/shelf2.png";
-//         } else {
-//             currentImage = "sprites/shelf.png";
-//         }
+let fillItemData = (jsonData, items) => {
 
-//         document.body.style.backgroundImage = `url('${currentImage}')`;
-//     }
-// });
+    for (let item of jsonData.items) {
+        if (item.type === "Item") {
+            items.push(new Item(item.name, item.image, item.className));
+        }
+        else if (item.type === "pictureFrame") {
+            items.push(new PictureFrame(item.name, item.image, item.popupImage, item.frameImg, item.className));
+        }
+        else {
+            console.log("WARNING:this item type " + item.name + " isn't supported. Check that your items.json types are correct");
+        }
+    }
+}
+
+//Fetch all the data from our jason file which contains the info for our items
+fetch("items.json")
+    .then(response => response.json())
+    .then(data => {
+        fillItemData(data, items);
+    })
+    .catch(error => {
+        console.log("WARNING: error retrieving json information: " + error);
+    })
+    .then(() => {
+        let shelf = new Items(items, 100, 50);
+        shelf.addToShelf();
+    })
+
+// let items = [new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"),];

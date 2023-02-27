@@ -1,0 +1,30 @@
+{
+    "items": [
+        {
+            "type": "Item",
+            "name": "item1",
+            "image": "sprites/flatBook.png",
+            "className": ""
+        },
+        {
+            "type": "pictureFrame",
+            "name": "item2",
+            "image": "sprites/frame.png",
+            "className": "",
+            "popupImage": "sprites/party2.jpg",
+            "frameImg": ""
+        },
+        {
+            "type": "Item",
+            "name": "item3",
+            "image": "sprites/flatBook.png",
+            "className": ""
+        },
+        {
+            "type": "Item",
+            "name": "item4",
+            "image": "sprites/flatBook.png",
+            "className": ""
+        }
+    ]
+}
