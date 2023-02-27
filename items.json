@@ -1,18 +1,29 @@
 {
     "items": [
         {
+            "type": "Item",
             "name": "item1",
-            "image": "item1.jpg",
-            "className": "item-class"
+            "image": "sprites/flatBook.png",
+            "className": ""
         },
         {
+            "type": "pictureFrame",
             "name": "item2",
-            "image": "item2.jpg",
-            "className": "item-class"
+            "image": "sprites/frame.png",
+            "className": "",
+            "popupImage": "sprites/party2.jpg",
+            "frameImg": ""
         },
         {
+            "type": "Item",
             "name": "item3",
-            "image": "item3.jpg",
+            "image": "sprites/flatBook.png",
+            "className": ""
+        },
+        {
+            "type": "Item",
+            "name": "item4",
+            "image": "sprites/flatBook.png",
             "className": ""
         }
     ]

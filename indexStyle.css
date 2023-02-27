@@ -16,3 +16,11 @@
     row-gap: 60px;
     justify-items: center;
   }
+
+  .pictureFrame img {
+    transition: all 0.3s ease-out;
+}
+
+.pictureFrame:hover {
+    opacity: 0.7;
+}

@@ -16,7 +16,7 @@ class Item {
 
 class PictureFrame extends Item {
 
-    constructor(name, image, popupImage, frameImg, className = "pictureFrame") {
+    constructor(name, image, popupImage, frameImg, className = "") {
         super(name, image, className);
         this.popupImage = popupImage;
         this.tag.onclick = this.createDisplay.bind(this);
@@ -28,10 +28,12 @@ class PictureFrame extends Item {
 
     createDisplay() {
         if (this.frameImg) {
-            new this.popupImage(this.popupImage, "", this.frameImg);
+            let popup = new this.popupImage(this.popupImage, "sprites/flatBook.png", this.frameImg);
+            popup.open();
             return;
         }
-        new PopupImage(this.popupImage, "");
+        let popup = new PopupImage(this.popupImage, "sprites/flatBook.png");
+        popup.open();
     }
 
 }
@@ -77,7 +79,7 @@ class PopupImage {
         this.closeButtonNode.style.position = "absolute";
         this.closeButtonNode.style.top = "0";
         this.closeButtonNode.style.right = "0";
-        this.closeButtonNode.style.fontSize = "24px";
+        this.closeButtonNode.style.fontSize = "80px";
         this.closeButtonNode.style.backgroundColor = "transparent";
         this.closeButtonNode.style.border = "none";
         this.closeButtonNode.style.color = "white";
@@ -122,8 +124,34 @@ class Items {
     }
 }
 
+let items = [];
 
+let fillItemData = (jsonData, items) => {
 
-let items = [new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"),];
-let shelf = new Items(items, 100, 50);
-shelf.addToShelf();
+    for (let item of jsonData.items) {
+        if (item.type === "Item") {
+            items.push(new Item(item.name, item.image, item.className));
+        }
+        else if (item.type === "pictureFrame") {
+            items.push(new PictureFrame(item.name, item.image, item.popupImage, item.frameImg, item.className));
+        }
+        else {
+            console.log("WARNING:this item type " + item.name + " isn't supported. Check that your items.json types are correct");
+        }
+    }
+}
+
+fetch("items.json")
+    .then(response => response.json())
+    .then(data => {
+        fillItemData(data, items);
+    })
+    .catch(error => {
+        console.log("WARNING: error retrieving json information: " + error);
+    })
+    .then(() => {
+        let shelf = new Items(items, 100, 50);
+        shelf.addToShelf();
+    })
+
+// let items = [new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"),];
