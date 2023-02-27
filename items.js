@@ -20,6 +20,7 @@ class PictureFrame extends Item {
         super(name, image, className);
         this.popupImage = popupImage;
         this.tag.onclick = this.createDisplay.bind(this);
+        this.tag.classList.add("pictureFrame");
         if (frameImg) {
             this.frameImg = frameImg;
         }
@@ -98,83 +99,31 @@ class PopupImage {
 }
 
 class Items {
-    constructor(items, maxRowWidth, bufferWidth) {
-        this.items = [];
-        this.currentRow = 0;
-        this.currentColumn = 0
-        this.maxRowWidth = maxRowWidth;
-        this.bufferWidth = bufferWidth;
+    constructor(items) {
+        this.items = items;
         this.inBody = false;
-        this.bufferHeight = 60;
-
-        for (const item of items) {
-            if (this.currentColumn === 0) {
-                this.items.push([]);
-            }
-
-            let currentRowWidth = 0;
-            for (const row of this.items[this.currentRow]) {
-                currentRowWidth += row.tag.naturalWidth + this.bufferWidth;
-            }
-
-            if (currentRowWidth + item.tag.naturalWidth <= this.maxRowWidth) {
-                this.items[this.currentRow].push(item);
-                this.currentColumn++;
-            } else {
-                this.currentRow++;
-                this.currentColumn = 0;
-                this.items.push([item]);
-            }
-        }
     }
 
-    removeFromBody() {
+    removeFromShelf() {
         if (!this.inBody)
             return;
-        for (const row of this.items) {
-            for (const item of row) {
-
-            }
+        for (const item of this.items) {
+            item.tag.remove();
         }
         this.inBody = false;
     }
 
-    addToBody(startX, startY) {
-
-        let currentX = startX;
-        let currentY = startY;
-        this.removeFromBody();
-
-        for (const row of this.items) {
-            for (const item of row) {
-                // item.tag.style.left = currentX + "px";
-                // item.tag.style.top = currentY + "px";
-                // item.tag.style.position = "absolute";
-                document.getElementById("itemsContainer").appendChild(item.tag);
-                //currentX += item.tag.naturalWidth + this.bufferWidth;
-            }
-
-            // currentY += this.items[0][0].tag.naturalHeight + this.bufferHeight;
-            // currentX = startX;
+    addToShelf() {
+        this.removeFromShelf();
+        for (const item of this.items) {
+            document.getElementById("itemsContainer").appendChild(item.tag);
         }
         this.inBody = true;
     }
 }
 
-// let currentImage = "sprites/shelf.png";
 
-// document.addEventListener("keydown", function (event) {
-//     if (event.code === "ArrowRight") {
-//         if (currentImage === "sprites/shelf.png") {
-//             currentImage = "sprites/shelf2.png";
-//         } else {
-//             currentImage = "sprites/shelf.png";
-//         }
-
-//         document.body.style.backgroundImage = `url('${currentImage}')`;
-//     }
-// });
 
 let items = [new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"), new Item("pic", "sprites/frame.png"),];
 let shelf = new Items(items, 100, 50);
-shelf.addToBody(65, 70);
+shelf.addToShelf();
