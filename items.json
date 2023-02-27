@@ -15,9 +15,10 @@
             "frameImg": ""
         },
         {
-            "type": "Item",
+            "type": "ImageCarousel",
             "name": "item3",
             "image": "sprites/flatBook.png",
+            "images": ["sprites/Adi.png","sprites/Chauncey.png","sprites/Dotty.png","sprites/mercX.png"],
             "className": ""
         },
         {
