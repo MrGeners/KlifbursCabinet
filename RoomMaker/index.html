@@ -1,0 +1,111 @@
+<html>
+  <head>
+    <style>
+      #canvas {
+        border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas" width="500" height="500"></canvas>
+    <script>
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+      const objects = ["table", "chair", "sofa", "delete"];
+      let currentObject = 0;
+      let layer = 0;
+      let room = [];
+
+      canvas.addEventListener("mousemove", function (event) {
+        let x = event.clientX - canvas.offsetLeft;
+        let y = event.clientY - canvas.offsetTop;
+        let object = objects[currentObject];
+        let image = new Image();
+        image.src = `sprites/${object}.png`;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < room.length; i++) {
+          if (room[i].layer === layer) {
+            ctx.drawImage(room[i].image, room[i].x, room[i].y);
+          }
+        }
+        if (object !== "delete") {
+          ctx.drawImage(image, x, y);
+        }
+      });
+
+      canvas.addEventListener("click", function (event) {
+        let x = event.clientX - canvas.offsetLeft;
+        let y = event.clientY - canvas.offsetTop;
+        let object = objects[currentObject];
+        let image = new Image();
+        image.src = `sprites/${object}.png`;
+        if (object === "delete") {
+          for (let i = 0; i < room.length; i++) {
+            if (
+              room[i].layer === layer &&
+              x >= room[i].x &&
+              x <= room[i].x + room[i].image.width &&
+              y >= room[i].y &&
+              y <= room[i].y + room[i].image.height
+            ) {
+              room.splice(i, 1);
+              break;
+            }
+          }
+        } else {
+          room.push({
+            layer: layer,
+            image: image,
+            x: x,
+            y: y,
+          });
+        }
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < room.length; i++) {
+          if (room[i].layer === layer) {
+            ctx.drawImage(room[i].image, room[i].x, room[i].y);
+          }
+        }
+      });
+
+      canvas.addEventListener("mousewheel", function (event) {
+        if (event.deltaY > 0) {
+          currentObject = (currentObject + 1) % objects.length;
+        } else {
+          currentObject = (currentObject + objects.length - 1) % objects.length;
+        }
+        let x = event.clientX - canvas.offsetLeft;
+        let y = event.clientY - canvas.offsetTop;
+        let object = objects[currentObject];
+        let image = new Image();
+        image.src = `sprites/${object}.png`;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < room.length; i++) {
+          if (room[i].layer === layer) {
+            ctx.drawImage(room[i].image, room[i].x, room[i].y);
+          }
+        }
+        if (object !== "delete") {
+          ctx.drawImage(image, x, y);
+        }
+      });
+
+      document.addEventListener("keydown", function (event) {
+        switch (event.keyCode) {
+          case 37: // Left arrow
+            layer = Math.max(layer - 1, 0);
+            break;
+          case 39: // Right arrow
+            layer = Math.min(layer + 1, 10);
+            break;
+        }
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < room.length; i++) {
+          if (room[i].layer === layer) {
+            ctx.drawImage(room[i].image, room[i].x, room[i].y);
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
