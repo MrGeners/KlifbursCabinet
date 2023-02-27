@@ -141,6 +141,7 @@ let fillItemData = (jsonData, items) => {
     }
 }
 
+//Fetch all the data from our jason file which contains the info for our items
 fetch("items.json")
     .then(response => response.json())
     .then(data => {
