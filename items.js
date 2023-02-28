@@ -11,6 +11,7 @@ class Item {
         this.tag.src = image;
         this.tag.className = className;
         this.tag.id = "item" + "-" + Item.idCounter;
+        this.tag.classList.add("item");
         // Create tooltip element
         this.tooltip = document.createElement("div");
         this.tooltip.classList.add("tooltip");
@@ -102,6 +103,102 @@ class Journal extends Item {
     }
 }
 
+class SnippetBox extends Item {
+    constructor(name, image, snippets, className = "") {
+        super(name, image, className);
+        this.snippets = snippets;
+        this.tag.onclick = this.createDisplay.bind(this);
+        this.tag.classList.add("pictureFrame");
+
+    }
+
+    createDisplay() {
+        let popup = new SnippetCarousel(this.snippets);
+        popup.show();
+    }
+}
+
+
+class SnippetCarousel {
+    constructor(snippets) { // snippets is an array of objects with a name, image, and text property
+        this.snippets = snippets;
+        this.currentSnippetIndex = 0;
+        this.carouselElement = document.createElement("div");
+        this.carouselElement.classList.add("carousel");
+
+        // Create left arrow button
+        const leftArrow = document.createElement("button");
+        leftArrow.classList.add("arrow");
+        leftArrow.classList.add("left");
+        leftArrow.innerHTML = "&#9664;";
+        leftArrow.addEventListener("click", () => this.showPrevSnippet());
+        this.carouselElement.appendChild(leftArrow);
+
+        // Create text element
+        const textElement = document.createElement("p");
+        textElement.innerHTML = snippets[this.currentSnippetIndex].name + "<br>" + snippets[this.currentSnippetIndex].text;
+        this.carouselElement.appendChild(textElement);
+
+        // Create right arrow button
+        const rightArrow = document.createElement("button");
+        rightArrow.classList.add("arrow");
+        rightArrow.classList.add("right");
+        rightArrow.innerHTML = "&#9654;";
+        rightArrow.addEventListener("click", () => this.showNextSnippet());
+        this.carouselElement.appendChild(rightArrow);
+
+        // Create close button
+        const closeButton = document.createElement("button");
+        closeButton.classList.add("close");
+        closeButton.innerHTML = "&times;";
+        closeButton.addEventListener("click", () => this.close());
+        this.carouselElement.appendChild(closeButton);
+
+        // create image element
+        const imageElement = document.createElement("img");
+        imageElement.src = snippets[this.currentSnippetIndex].image;
+        this.carouselElement.appendChild(imageElement);
+
+    }
+
+    show() {
+        document.body.appendChild(this.carouselElement);
+    }
+
+    close() {
+        this.carouselElement.remove();
+    }
+
+    updateElements(snippet) {
+        if (snippet.text == "" && snippet.name == "") {
+            this.carouselElement.children[1].style.visibility = "hidden";
+            this.carouselElement.children[1].innerHTML = "";
+        }
+        else {
+            this.carouselElement.children[1].style.visibility = "visible";
+            this.carouselElement.children[1].innerHTML = snippet.name + "<br>" + snippet.text;
+        }
+        if (snippet.image != "" && snippet.image != undefined && snippet.image != null) {
+            this.carouselElement.children[4].src = snippet.image;
+            this.carouselElement.children[4].style.visibility = "visible";
+        }
+        else {
+            this.carouselElement.children[4].src = null;
+            this.carouselElement.children[4].style.visibility = "hidden";
+        }
+    }
+
+
+    showNextSnippet() {
+        this.currentSnippetIndex = (this.currentSnippetIndex + 1) % this.snippets.length;
+        this.updateElements(this.snippets[this.currentSnippetIndex]);
+    }
+
+    showPrevSnippet() {
+        this.currentSnippetIndex = (this.currentSnippetIndex - 1 + this.snippets.length) % this.snippets.length;
+        this.updateElements(this.snippets[this.currentSnippetIndex]);
+    }
+}
 
 class TextCarousel {
     constructor(texts) {
@@ -319,6 +416,9 @@ let fillItemData = (jsonData, items) => {
         }
         else if (item.type === "Journal") {
             items.push(new Journal(item.name, item.image, item.texts, item.className));
+        }
+        else if (item.type === "SnippetBox") {
+            items.push(new SnippetBox(item.name, item.image, item.snippets, item.className));
         }
         else {
             console.log("WARNING:this item type " + item.name + " isn't supported. Check that your items.json types are correct");

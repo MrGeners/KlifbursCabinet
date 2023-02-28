@@ -15,6 +15,8 @@
     grid-template-columns: repeat(3, 1fr);
     row-gap: 60px;
     justify-items: center;
+    align-items: flex-end;
+    grid-auto-rows: 240px 
   }
 
   .pictureFrame img {
@@ -99,4 +101,15 @@
   font-size: 14px;
   white-space: nowrap;
   pointer-events: none;
+}
+
+.item {
+  display: flex;
+  align-items: flex-end; /* Align flex items to the bottom */
+  
+}
+
+.item img {
+  align-self: flex-end; /* Align the image to the bottom of the grid cell */
+  max-width: 100%; /* Ensure the image fits within the cell */
 }
