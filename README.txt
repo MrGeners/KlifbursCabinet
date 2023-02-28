@@ -45,7 +45,11 @@ require more properties
                 this is the path to the image that will popup when the Item is clicked
             "frameImg":"sprites/image.png"
                 this is the image behind the popup image that will frame your image. 
-
+    "PictureBook" 
+        This item type is for showing multiple small to medium sized images that will displayed sequentially in a carousel popup. 
+        The only additional needed property is images which will hold a series of image paths in between [] if you need a 
+        line break add </br> for each line break needed
+            "images": ["sprites/image1.png", "sprites/image2.png", "sprites/etc.png"]
 
 This is all for now, as more functionality is added to the repository, more documentation will be added. 
 
