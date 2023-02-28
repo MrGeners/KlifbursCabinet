@@ -107,7 +107,7 @@ class TextCarousel {
     constructor(texts) {
         this.texts = texts;
         this.currentTextIndex = 0;
-        this.carouselElement = document.createElement("p");
+        this.carouselElement = document.createElement("div");
         this.carouselElement.classList.add("carousel");
 
         // Create left arrow button
@@ -119,7 +119,7 @@ class TextCarousel {
         this.carouselElement.appendChild(leftArrow);
 
         // Create text element
-        const textElement = document.createElement("div");
+        const textElement = document.createElement("p");
         textElement.innerHTML = texts[this.currentTextIndex];
         this.carouselElement.appendChild(textElement);
 

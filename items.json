@@ -32,8 +32,8 @@
             "name": "item5",
             "image": "sprites/flatBook.png",
             "texts": 
-            ["Chauncey was a man of great size and weight. He stood at six foot five and weighed over 300 pounds. He was a simple man with simple pleasures. He loved to eat, drink and be merry. He was not one to pay much attention to the world around him, and this would prove to be a problem.\n\n            One day, Chauncey was walking through a dense forest on his way to the local tavern. He was in a hurry to get there and wasn't paying much attention to where he was stepping. As he trudged through the forest, he felt something crunch beneath his feet. He didn't think much of it and continued on his way.\n\n   Unknown to Chauncey, he had just stepped on a group of tiny fantasy gnomes who were living in the forest. They were not hurt, but they were not happy. The gnomes had been living in the forest for generations and had never encountered someone as careless as Chauncey.", 
-            "This is the second page of the journal"],
+            ["Chauncey was a man of great size and weight. He stood at six foot five and weighed over 300 pounds. He was a simple man with simple pleasures. He loved to eat, drink and be merry. He was not one to pay much attention to the world around him, and this would prove to be a problem.<br><br>            One day, Chauncey was walking through a dense forest on his way to the local tavern. He was in a hurry to get there and wasn't paying much attention to where he was stepping. As he trudged through the forest, he felt something crunch beneath his feet. He didn't think much of it and continued on his way.<br><br>   Unknown to Chauncey, he had just stepped on a group of tiny fantasy gnomes who were living in the forest. They were not hurt, but they were not happy. The gnomes had been living in the forest for generations and had never encountered someone as careless as Chauncey.", 
+            "This is the second page of the journal", "This is the third page of the journal", "This is the fourth page of the journal"],
             "className": ""
         }
     ]

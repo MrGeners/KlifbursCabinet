@@ -48,7 +48,7 @@ require more properties
     "PictureBook" 
         This item type is for showing multiple small to medium sized images that will displayed sequentially in a carousel popup. 
         The only additional needed property is images which will hold a series of image paths in between [] if you need a 
-        line break add \n for each line break needed
+        line break add </br> for each line break needed
             "images": ["sprites/image1.png", "sprites/image2.png", "sprites/etc.png"]
 
 This is all for now, as more functionality is added to the repository, more documentation will be added. 
