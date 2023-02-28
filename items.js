@@ -87,6 +87,78 @@ class PictureBook extends Item {
     }
 }
 
+class Journal extends Item {
+    constructor(name, image, texts, className = "") {
+        super(name, image, className);
+        this.texts = texts;
+        this.tag.onclick = this.createDisplay.bind(this);
+        this.tag.classList.add("pictureFrame");
+
+    }
+
+    createDisplay() {
+        let popup = new TextCarousel(this.texts);
+        popup.show();
+    }
+}
+
+
+class TextCarousel {
+    constructor(texts) {
+        this.texts = texts;
+        this.currentTextIndex = 0;
+        this.carouselElement = document.createElement("p");
+        this.carouselElement.classList.add("carousel");
+
+        // Create left arrow button
+        const leftArrow = document.createElement("button");
+        leftArrow.classList.add("arrow");
+        leftArrow.classList.add("left");
+        leftArrow.innerHTML = "&#9664;";
+        leftArrow.addEventListener("click", () => this.showPrevText());
+        this.carouselElement.appendChild(leftArrow);
+
+        // Create text element
+        const textElement = document.createElement("div");
+        textElement.innerHTML = texts[this.currentTextIndex];
+        this.carouselElement.appendChild(textElement);
+
+        // Create right arrow button
+        const rightArrow = document.createElement("button");
+        rightArrow.classList.add("arrow");
+        rightArrow.classList.add("right");
+        rightArrow.innerHTML = "&#9654;";
+        rightArrow.addEventListener("click", () => this.showNextText());
+        this.carouselElement.appendChild(rightArrow);
+
+        // Create close button
+        const closeButton = document.createElement("button");
+        closeButton.classList.add("close");
+        closeButton.innerHTML = "&times;";
+        closeButton.addEventListener("click", () => this.hide());
+        this.carouselElement.appendChild(closeButton);
+    }
+
+    show() {
+        document.body.appendChild(this.carouselElement);
+    }
+
+    hide() {
+        this.carouselElement.remove();
+    }
+
+    showPrevText() {
+        this.currentTextIndex = (this.currentTextIndex - 1 + this.texts.length) % this.texts.length;
+        const textElement = this.carouselElement.querySelector("p");
+        textElement.innerHTML = this.texts[this.currentTextIndex];
+    }
+
+    showNextText() {
+        this.currentTextIndex = (this.currentTextIndex + 1) % this.texts.length;
+        const textElement = this.carouselElement.querySelector("p");
+        textElement.innerHTML = this.texts[this.currentTextIndex];
+    }
+}
 
 class ImageCarousel {
     constructor(images) {
@@ -244,6 +316,9 @@ let fillItemData = (jsonData, items) => {
         }
         else if (item.type === "ImageCarousel") {
             items.push(new PictureBook(item.name, item.image, item.images, item.className));
+        }
+        else if (item.type === "Journal") {
+            items.push(new Journal(item.name, item.image, item.texts, item.className));
         }
         else {
             console.log("WARNING:this item type " + item.name + " isn't supported. Check that your items.json types are correct");
