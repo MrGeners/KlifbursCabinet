@@ -12,42 +12,150 @@ class Item {
         this.tag.className = className;
         this.tag.id = "item" + "-" + Item.idCounter;
         this.tag.classList.add("item");
-        // Create tooltip element
-        this.tooltip = document.createElement("div");
-        this.tooltip.classList.add("tooltip");
-        this.tooltip.textContent = this.name;
-        this.tooltip.style.display = "none";
-        document.body.appendChild(this.tooltip);
-        this.hovering = false;
+        this.cellWidth = 4.5;
+        this.tag.onload = () => {
+            console.log(this.tag.naturalWidth);
+            if (this.tag.naturalWidth > this.cellWidth) {
+                this.tag.style.gridColumn = "span " + Math.ceil(this.tag.naturalWidth / this.cellWidth);
+            }
+            // Create tooltip element
+            this.tooltip = document.createElement("div");
+            this.tooltip.classList.add("tooltip");
+            this.tooltip.textContent = this.name;
+            this.tooltip.style.display = "none";
+            document.body.appendChild(this.tooltip);
+            this.hovering = false;
 
-        // Add mouseenter event listener
-        this.tag.addEventListener("mouseenter", (event) => {
-            // Show tooltip element
-            this.tooltip.style.display = "block";
-            // Position tooltip element next to mouse cursor
-            this.tooltip.style.left = event.clientX + 10 + "px";
-            this.tooltip.style.top = event.clientY + 10 + "px";
-            this.hovering = true;
-        });
-
-        this.tag.addEventListener("mousemove", (event) => {
-            // Position tooltip element next to mouse cursor
-            if (this.hovering) {
+            // Add mouseenter event listener
+            this.tag.addEventListener("mouseenter", (event) => {
+                // Show tooltip element
+                this.tooltip.style.display = "block";
+                // Position tooltip element next to mouse cursor
                 this.tooltip.style.left = event.clientX + 10 + "px";
                 this.tooltip.style.top = event.clientY + 10 + "px";
-            }
-        });
+                this.hovering = true;
+            });
 
-        // Add mouseleave event listener
-        this.tag.addEventListener("mouseleave", () => {
-            // Hide tooltip element
-            this.tooltip.style.display = "none";
-            this.hovering = false;
-        });
+
+
+            this.tag.addEventListener("mousemove", (event) => {
+                // Position tooltip element next to mouse cursor
+                if (this.hovering) {
+                    this.tooltip.style.left = event.clientX + 10 + "px";
+                    this.tooltip.style.top = event.clientY + 10 + "px";
+                }
+            });
+
+            // Add mouseleave event listener
+            this.tag.addEventListener("mouseleave", () => {
+                // Hide tooltip element
+                this.tooltip.style.display = "none";
+                this.hovering = false;
+            });
+        }
     }
 
 
 }
+
+
+class Artifact extends Item {
+    constructor(name, image, popupImg, description, className = "") {
+        super(name, image, className);
+        this.description = description;
+        this.tag.onclick = this.createDisplay.bind(this);
+        this.tag.classList.add("artifact");
+        this.tag.classList.add("pictureFrame");
+        this.popupImg = popupImg;
+    }
+
+    createDisplay() {
+        let popup = new ArtifactPopup(this.name, this.description, this.popupImg);
+        popup.open();
+    }
+}
+
+class ArtifactPopup {
+    constructor(name, description, popupImg) {
+        // Create popup container
+        this.popupContainer = document.createElement("div");
+        this.popupContainer.classList.add("popup-container");
+
+        // Create particle container
+        this.particleContainer = document.createElement("div");
+        this.particleContainer.classList.add("particle-container");
+
+        // Create popup content
+        this.popupContent = document.createElement("div");
+        this.popupContent.classList.add("popup-content");
+
+        // Create popup title
+        this.popupTitle = document.createElement("h2");
+        this.popupTitle.textContent = name;
+
+        // Create popup image
+        this.popupImg = document.createElement("img");
+        this.popupImg.src = popupImg;
+        this.popupImg.classList.add("popup-img");
+
+        // Create popup description
+        this.popupDescription = document.createElement("p");
+        this.popupDescription.textContent = description;
+
+        // Create popup close button
+        this.popupClose = document.createElement("span");
+        this.popupClose.classList.add("popup-close");
+        this.popupClose.innerHTML = "&times;";
+        this.popupClose.addEventListener("click", () => {
+            this.close();
+        });
+
+        // Add popup content to container
+        this.popupContent.appendChild(this.popupTitle);
+        this.popupContent.appendChild(this.popupImg);
+        this.popupContent.appendChild(this.popupDescription);
+
+        // Add close button to content
+        this.popupContent.appendChild(this.popupClose);
+
+        // Add content to container
+        this.popupContainer.appendChild(this.particleContainer);
+        this.popupContainer.appendChild(this.popupContent);
+
+        // Add container to body
+        document.body.appendChild(this.popupContainer);
+
+
+
+        // Add transitions
+        this.popupContainer.addEventListener("transitionend", (event) => {
+            if (!this.popupContainer.classList.contains("show")) {
+                this.popupContainer.style.display = "none";
+            }
+        });
+    }
+
+    open() {
+        // Show popup container
+        this.popupContainer.style.display = "flex";
+        setTimeout(() => {
+            this.popupContainer.classList.add("show");
+        }, 10);
+
+
+    }
+
+    close() {
+        // Hide popup container
+        this.popupContainer.classList.remove("show");
+
+        // Stop particle animation and randomization
+
+    }
+}
+
+
+
 
 class PictureFrame extends Item {
 
@@ -419,6 +527,9 @@ let fillItemData = (jsonData, items) => {
         }
         else if (item.type === "SnippetBox") {
             items.push(new SnippetBox(item.name, item.image, item.snippets, item.className));
+        }
+        else if (item.type === "Artifact") {
+            items.push(new Artifact(item.name, item.image, item.popupImg, item.description, item.className));
         }
         else {
             console.log("WARNING:this item type " + item.name + " isn't supported. Check that your items.json types are correct");
