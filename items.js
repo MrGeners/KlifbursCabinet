@@ -7,55 +7,69 @@ class Item {
     constructor(name, image = "", className = "") {
         this.name = name;
         Item.idCounter++;
+
+        // Create a new image object and set its src to the provided image URL
+        this.image = new Image();
+        this.image.src = image;
+
+        // Create a new img element and set its id, class, and other attributes
         this.tag = document.createElement("img");
-        this.tag.src = image;
         this.tag.className = className;
         this.tag.id = "item" + "-" + Item.idCounter;
         this.tag.classList.add("item");
-        this.cellWidth = 4.5;
-        this.tag.onload = () => {
-            console.log(this.tag.naturalWidth);
-            if (this.tag.naturalWidth > this.cellWidth) {
-                this.tag.style.gridColumn = "span " + Math.ceil(this.tag.naturalWidth / this.cellWidth);
-            }
-            // Create tooltip element
-            this.tooltip = document.createElement("div");
-            this.tooltip.classList.add("tooltip");
-            this.tooltip.textContent = this.name;
-            this.tooltip.style.display = "none";
-            document.body.appendChild(this.tooltip);
-            this.hovering = false;
 
-            // Add mouseenter event listener
-            this.tag.addEventListener("mouseenter", (event) => {
-                // Show tooltip element
-                this.tooltip.style.display = "block";
-                // Position tooltip element next to mouse cursor
-                this.tooltip.style.left = event.clientX + 10 + "px";
-                this.tooltip.style.top = event.clientY + 10 + "px";
-                this.hovering = true;
-            });
+        // Wait for the image to load before adding it to the img element
+        this.image.onload = () => {
+            // Trim the image to remove transparent rows
+            const trimmedImage = trimTransparency(this.image);
+            // Set the src attribute of the img element to the trimmed image
+            this.tag.src = trimmedImage.src;
 
 
+            this.tag.onload = () => {
+                // Set the grid column span based on the width of the trimmed image
+                if (trimmedImage.naturalWidth > this.cellWidth) {
+                    this.tag.style.gridColumn = "span " + Math.ceil(trimmedImage.naturalWidth / this.cellWidth);
+                }
 
-            this.tag.addEventListener("mousemove", (event) => {
-                // Position tooltip element next to mouse cursor
-                if (this.hovering) {
+                // Create tooltip element
+                this.tooltip = document.createElement("div");
+                this.tooltip.classList.add("tooltip");
+                this.tooltip.textContent = this.name;
+                this.tooltip.style.display = "none";
+                document.body.appendChild(this.tooltip);
+                this.hovering = false;
+
+                // Add mouseenter event listener
+                this.tag.addEventListener("mouseenter", (event) => {
+                    // Show tooltip element
+                    this.tooltip.style.display = "block";
+                    // Position tooltip element next to mouse cursor
                     this.tooltip.style.left = event.clientX + 10 + "px";
                     this.tooltip.style.top = event.clientY + 10 + "px";
-                }
-            });
+                    this.hovering = true;
+                });
 
-            // Add mouseleave event listener
-            this.tag.addEventListener("mouseleave", () => {
-                // Hide tooltip element
-                this.tooltip.style.display = "none";
-                this.hovering = false;
-            });
-        }
+                // Add mousemove event listener
+                this.tag.addEventListener("mousemove", (event) => {
+                    // Position tooltip element next to mouse cursor
+                    if (this.hovering) {
+                        this.tooltip.style.left = event.clientX + 10 + "px";
+                        this.tooltip.style.top = event.clientY + 10 + "px";
+                    }
+                });
+
+                // Add mouseleave event listener
+                this.tag.addEventListener("mouseleave", () => {
+                    // Hide tooltip element
+                    this.tooltip.style.display = "none";
+                    this.hovering = false;
+                });
+            };
+        };
+
+        this.cellWidth = 4.5;
     }
-
-
 }
 
 
@@ -80,6 +94,15 @@ class ArtifactPopup {
         // Create popup container
         this.popupContainer = document.createElement("div");
         this.popupContainer.classList.add("popup-container");
+
+        this.popupContainer.addEventListener("click", (event) => {
+            console.log(event.target);
+            if (event.target === this.popupContainer) {
+                // Do something when the container or its background is clicked
+                console.log("clicked!");
+                this.close();
+            }
+        });
 
         // Create particle container
         this.particleContainer = document.createElement("div");
@@ -119,7 +142,6 @@ class ArtifactPopup {
         this.popupContent.appendChild(this.popupClose);
 
         // Add content to container
-        this.popupContainer.appendChild(this.particleContainer);
         this.popupContainer.appendChild(this.popupContent);
 
         // Add container to body
@@ -133,6 +155,8 @@ class ArtifactPopup {
                 this.popupContainer.style.display = "none";
             }
         });
+
+
     }
 
     open() {
